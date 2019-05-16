@@ -1,0 +1,76 @@
+using UnityEngine;
+using UnityEngine.UI;
+
+public class Timer : MonoBehaviour
+{
+    public Text timeTF;
+    public Text finalScoreText;
+    public GameObject gameOver;
+
+    float finalScore;
+
+    float highScoreFloat;
+    float secondScoreFloat;
+    float thirdScoreFloat;
+    float fourthScoreFloat;
+    float fifthScoreFloat;
+
+    void Start()
+    {
+        Time.timeScale = 1;
+        timeTF = GetComponent<Text>();
+        InvokeRepeating("ReduceTime", 1, 1);
+    
+        GameObject A = GameObject.FindGameObjectWithTag("Music");
+        Destroy(A);
+    }
+
+    void ReduceTime()
+    {
+        if (timeTF.text == "1")
+        {
+            /*Alert*/
+
+            Time.timeScale = 0;
+            Instantiate(gameOver, new Vector3(0.5f, 0.5f, 0), transform.rotation);
+            finalScoreText = GameObject.Find("Score count").GetComponent<Text>();
+            finalScore = float.Parse(finalScoreText.text);
+            float highScoreFloat = PlayerPrefs.GetFloat("High Score");
+            float secondScoreFloat = PlayerPrefs.GetFloat("Second Score");
+            float thirdScoreFloat = PlayerPrefs.GetFloat("Third Score");
+            float fourthScoreFloat = PlayerPrefs.GetFloat("Fourth Score");
+            float fifthScoreFloat = PlayerPrefs.GetFloat("Fifth Score");
+            if (finalScore>highScoreFloat)
+            {
+                PlayerPrefs.SetFloat("High Score", finalScore);
+                PlayerPrefs.SetFloat("Second Score", highScoreFloat);
+                PlayerPrefs.SetFloat("Third Score", secondScoreFloat);
+                PlayerPrefs.SetFloat("Fourth Score", thirdScoreFloat);
+                PlayerPrefs.SetFloat("Fifth Score", fourthScoreFloat);
+            }
+            if (finalScore > secondScoreFloat && finalScore<highScoreFloat)
+            {
+                PlayerPrefs.SetFloat("Second Score", finalScore);
+                PlayerPrefs.SetFloat("Third Score", secondScoreFloat);
+                PlayerPrefs.SetFloat("Fourth Score", thirdScoreFloat);
+                PlayerPrefs.SetFloat("Fifth Score", fourthScoreFloat);
+            }
+            if (finalScore > thirdScoreFloat && finalScore < secondScoreFloat)
+            {
+                PlayerPrefs.SetFloat("Third Score", finalScore);
+                PlayerPrefs.SetFloat("Fourth Score", thirdScoreFloat);
+                PlayerPrefs.SetFloat("Fifth Score", fourthScoreFloat);
+            }
+            if (finalScore > fourthScoreFloat && finalScore < thirdScoreFloat)
+            {
+                PlayerPrefs.SetFloat("Fourth Score", finalScore);
+                PlayerPrefs.SetFloat("Fifth Score", fourthScoreFloat);
+            }
+            if (finalScore > fifthScoreFloat && finalScore < fourthScoreFloat)
+            {
+                PlayerPrefs.SetFloat("Fifth Score", finalScore);
+            }
+        }
+        timeTF.text = (int.Parse(timeTF.text) - 1).ToString();
+    }
+}
