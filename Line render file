@@ -1,0 +1,70 @@
+using UnityEngine;
+
+public class LineRender : MonoBehaviour {
+
+    public Color c1 = Color.blue;
+    public Color c2 = Color.red;
+    private GameObject lineGO;
+    private LineRenderer lineX;
+    private int i = 0;
+   
+    // Use this for initialization
+    void Start ()
+    {
+        lineGO = new GameObject ("Line");
+        lineGO.AddComponent<LineRenderer>();
+        lineX = lineGO.GetComponent<LineRenderer>();
+        lineX.material = new Material(Shader.Find("Mobile/Particles/Additive"));
+        lineX.startColor = c1;
+        lineX.endColor = c2;
+        lineX.startWidth = 0;
+        lineX.endWidth = 7;
+        lineX.positionCount = 1 ;
+
+        InvokeRepeating("DeleteBoxC", 0.2f, 0.2f);
+    }
+    void DeleteBoxC()
+    {
+        BoxCollider[] lineColliders = lineGO.GetComponents<BoxCollider>();
+        foreach (BoxCollider b in lineColliders)
+        {
+            Destroy(b);
+        }
+        lineX.positionCount = 0;
+        i = 0;
+    }
+
+    // Update is called once per frame
+	void Update ()
+    {
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.GetTouch(0);
+
+            if (touch.phase == TouchPhase.Moved)
+            {
+                lineX.positionCount = i + 1;
+                Vector3 mPosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 100);
+                lineX.SetPosition(i, Camera.main.ScreenToWorldPoint(mPosition));
+                i++;
+
+                /* Add Collider */
+                BoxCollider bc = lineGO.AddComponent<BoxCollider>();
+                bc.transform.position = lineX.transform.position;
+                bc.size = new Vector3(9, 1, 1000);
+
+            }
+            if (touch.phase == TouchPhase.Ended)
+            {
+                lineX.positionCount = 0;
+                i = 0;
+                BoxCollider[] lineColliders = lineGO.GetComponents<BoxCollider>();
+                foreach (BoxCollider b in lineColliders)
+                {
+                    Destroy(b);
+                }
+
+            }
+        }
+}
+}
