@@ -1,0 +1,44 @@
+using UnityEngine;
+using UnityEngine.UI;
+
+public class CircleScript : MonoBehaviour {
+    int boxHits = 0;
+    public GameObject hitSuccessReference;
+    private Text scoreReference;
+    private AudioSource destroyedSound;
+
+    void Start()
+    {
+        scoreReference = GameObject.Find("Score count").GetComponent<Text>();
+        destroyedSound = GameObject.Find("Object Sound").GetComponent<AudioSource>();
+    }
+
+
+    void Update()
+    {
+        if (boxHits >= 10)
+        {
+            Vector3 objectPos = gameObject.transform.position;
+            Vector3 objectScale = gameObject.transform.localScale;
+            Destroy(gameObject);
+            scoreReference.text = (int.Parse(scoreReference.text) + 1).ToString();
+            destroyedSound.Play();
+            GameObject hitSuccess = Instantiate(hitSuccessReference, objectPos, transform.rotation) as GameObject;
+            hitSuccess.transform.localScale = objectScale;
+        }
+        if (gameObject.transform.position.z < -15)
+        {
+            Destroy(gameObject);
+        }
+    }
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.name == "Line")
+        {
+            boxHits++;
+
+            GameObject obj1 = this.gameObject;
+            GameObject obj2 = other.gameObject;
+        }
+    }
+}
