@@ -1,0 +1,41 @@
+using UnityEngine;
+using System.Collections;
+
+public class Move3 : MonoBehaviour
+{
+    private float time_for_move = 20;
+    public Vector3 begin;
+    float timer = 20;
+
+    void Start()
+    {
+        Vector3 lowerRightPoint = Camera.main.ScreenToWorldPoint(new Vector3(Camera.main.pixelWidth, 0, 0));
+        Vector3 upperLeftPoint = Camera.main.ScreenToWorldPoint(new Vector3(0, Camera.main.pixelHeight, 0));
+        float xRange = Random.Range((upperLeftPoint.x + 30), (lowerRightPoint.x - 20));
+        float yRange = Random.Range((lowerRightPoint.y + 20), (upperLeftPoint.y - 30));
+        var zCoord = 108;
+        begin = new Vector3(xRange, yRange, zCoord);
+
+        timer = time_for_move;
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        float xRange = gameObject.transform.position.x;
+        float yRange = gameObject.transform.position.y;
+        Vector3 end = new Vector3(xRange, yRange, -100);
+   
+        timer -= Time.deltaTime;
+
+        if (timer > 0 && Time.timeScale == 1)
+        {
+
+            Vector3 distance = end - begin;
+            float degree_of_movement = (time_for_move - timer) / time_for_move;
+            transform.position = new Vector3(begin.x + (distance.x * degree_of_movement), begin.y + (distance.y * degree_of_movement), begin.z + (distance.z * degree_of_movement));
+            transform.localScale += new Vector3(0.006F,0.006F, 0);
+        }
+    }
+}
